@@ -50,7 +50,7 @@ public class ProjectSliderStep extends WizardStep {
                 .setToolTipText("To the testing activity, everything you do with Junit tests counts. Examples: writing, modifying, debugging, and executing Junit tests");
 
         percentageProductionSlider = new JSlider(JSlider.HORIZONTAL);
-        percentageProductionSlider.setValue(50);
+        percentageProductionSlider.setValue(80);
         percentageProductionSlider.setMinorTickSpacing(5);
         percentageProductionSlider.setSnapToTicks(false);
         percentageProductionSlider.setMaximum(100);
@@ -64,7 +64,7 @@ public class ProjectSliderStep extends WizardStep {
 
         JPanel sliderValuePanel = UIUtils.createFlowJPanelCenter(parent);
         final JLabel sliderValueText = UIUtils.createItalicLabel(
-                sliderValuePanel, "50% Testing, 50% Production");
+                sliderValuePanel, "20% Testing, 80% Production");
         percentageProductionSlider.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e) {
