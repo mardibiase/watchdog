@@ -1,17 +1,17 @@
 package nl.tudelft.watchdog.eclipse.ui.wizards.projectregistration;
 
-import nl.tudelft.watchdog.core.ui.wizards.YesNoDontKnowChoice;
-import nl.tudelft.watchdog.eclipse.ui.util.UIUtils;
-import nl.tudelft.watchdog.eclipse.ui.wizards.FinishableWizardPage;
-import nl.tudelft.watchdog.eclipse.ui.wizards.FormValidationListener;
-import nl.tudelft.watchdog.eclipse.ui.wizards.RegistrationWizardBase;
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Scale;
+
+import nl.tudelft.watchdog.core.ui.wizards.YesNoDontKnowChoice;
+import nl.tudelft.watchdog.eclipse.ui.util.UIUtils;
+import nl.tudelft.watchdog.eclipse.ui.wizards.FinishableWizardPage;
+import nl.tudelft.watchdog.eclipse.ui.wizards.FormValidationListener;
+import nl.tudelft.watchdog.eclipse.ui.wizards.RegistrationWizardBase;
 
 /**
  * A Page displaying a slider so that the user can estimate how his or her time
@@ -48,22 +48,22 @@ public class ProjectSliderPage extends FinishableWizardPage {
 
 		Composite row = UIUtils.createFullGridedComposite(topComposite, 3);
 		Label testingLabel = UIUtils.createLabel("100% Testing  ", row);
-		testingLabel
-				.setToolTipText("To the testing activity, everything you do with Junit tests counts. Examples: writing, modifying, debugging, and executing Junit tests");
+		testingLabel.setToolTipText(
+				"To the testing activity, everything you do with Junit tests counts. Examples: writing, modifying, debugging, and executing Junit tests");
 		percentageProductionSlider = new Scale(row, SWT.HORIZONTAL);
-		percentageProductionSlider.setLayoutData(UIUtils
-				.createFullGridUsageData());
-		percentageProductionSlider.setSelection(50);
+		percentageProductionSlider
+				.setLayoutData(UIUtils.createFullGridUsageData());
+		percentageProductionSlider.setSelection(80);
 		percentageProductionSlider.setIncrement(5);
 		percentageProductionSlider.setPageIncrement(5);
 		percentageProductionSlider.setMaximum(100);
 		percentageProductionSlider.setMinimum(0);
 		Label productionLabel = UIUtils.createLabel("  100% Production", row);
-		productionLabel
-				.setToolTipText("To the production activity, every activity that has to do with regular, non-test production code counts.");
+		productionLabel.setToolTipText(
+				"To the production activity, every activity that has to do with regular, non-test production code counts.");
 		UIUtils.createLabel("", row);
-		final Label sliderValueText = UIUtils.createItalicLabel(
-				"50% Testing, 50% Production", row);
+		final Label sliderValueText = UIUtils
+				.createItalicLabel("20% Testing, 80% Production", row);
 		sliderValueText.setLayoutData(UIUtils.createFullGridUsageData());
 		sliderValueText.setAlignment(SWT.CENTER);
 		percentageProductionSlider
@@ -73,9 +73,8 @@ public class ProjectSliderPage extends FinishableWizardPage {
 						int developmentTimeValue = percentageProductionSlider
 								.getSelection();
 						int testingTimeValue = 100 - developmentTimeValue;
-						sliderValueText.setText(testingTimeValue
-								+ "% Testing, " + developmentTimeValue
-								+ "% Production");
+						sliderValueText.setText(testingTimeValue + "% Testing, "
+								+ developmentTimeValue + "% Production");
 						sliderValueText.update();
 						sliderTouched = true;
 						validateFormInputs();
@@ -90,8 +89,8 @@ public class ProjectSliderPage extends FinishableWizardPage {
 				"Testing is every activity related to testing (reading, writing, modifying, refactoring and executing JUnit tests).\nProduction is every activity related to regular code (reading, writing, modifying, and refactoring Java classes).\n",
 				topComposite);
 
-		Composite questionComposite = UIUtils.createFullGridedComposite(
-				topComposite, 2);
+		Composite questionComposite = UIUtils
+				.createFullGridedComposite(topComposite, 2);
 		junitForUnitTestingOnly = createSimpleYesNoDontKnowQuestion(
 				"Do you use JUnit only for unit testing \n (i.e. only one production class tested per Junit test class)? ",
 				questionComposite);
@@ -112,10 +111,12 @@ public class ProjectSliderPage extends FinishableWizardPage {
 	@Override
 	public void validateFormInputs() {
 		if (!sliderTouched) {
-			setErrorMessage("Move the slider to estimate your personal time distribution.");
+			setErrorMessage(
+					"Move the slider to estimate your personal time distribution.");
 		} else if (!hasOneSelection(junitForUnitTestingOnly)
 				|| !hasOneSelection(testDrivenDesing)) {
-			setErrorMessageAndPageComplete("Please answer all yes/no/don't know questions!");
+			setErrorMessageAndPageComplete(
+					"Please answer all yes/no/don't know questions!");
 		} else {
 			setErrorMessageAndPageComplete(null);
 		}
