@@ -3,6 +3,12 @@ package nl.tudelft.watchdog.eclipse.util;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
+import nl.tudelft.watchdog.core.ui.preferences.ProjectPreferenceSetting;
+import nl.tudelft.watchdog.core.util.ContentReaderException;
+import nl.tudelft.watchdog.core.util.WatchDogLogger;
+import nl.tudelft.watchdog.core.util.WatchDogUtilsBase;
+import nl.tudelft.watchdog.eclipse.ui.preferences.Preferences;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.jface.text.IDocument;
@@ -10,12 +16,6 @@ import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.ITextEditor;
-
-import nl.tudelft.watchdog.core.ui.preferences.ProjectPreferenceSetting;
-import nl.tudelft.watchdog.core.util.ContentReaderException;
-import nl.tudelft.watchdog.core.util.WatchDogLogger;
-import nl.tudelft.watchdog.core.util.WatchDogUtilsBase;
-import nl.tudelft.watchdog.eclipse.ui.preferences.Preferences;
 
 /** Utilities for WatchDog. */
 public class WatchDogUtils extends WatchDogUtilsBase {
@@ -57,8 +57,8 @@ public class WatchDogUtils extends WatchDogUtilsBase {
 					"Editor closed: Document provider is null");
 		}
 
-		IDocument document = documentProvider
-				.getDocument(editor.getEditorInput());
+		IDocument document = documentProvider.getDocument(editor
+				.getEditorInput());
 		return document;
 	}
 
@@ -124,6 +124,7 @@ public class WatchDogUtils extends WatchDogUtilsBase {
 	public static String getWorkspaceName() {
 		return ResourcesPlugin.getWorkspace().getRoot().getLocation().toFile()
 				.toString();
+
 	}
 
 	/**
@@ -131,8 +132,8 @@ public class WatchDogUtils extends WatchDogUtilsBase {
 	 * workspace.
 	 */
 	public static ProjectPreferenceSetting getProjectSetting() {
-		return Preferences.getInstance()
-				.getOrCreateProjectSetting(getWorkspaceName());
+		return Preferences.getInstance().getOrCreateProjectSetting(
+				getWorkspaceName());
 	}
 
 }

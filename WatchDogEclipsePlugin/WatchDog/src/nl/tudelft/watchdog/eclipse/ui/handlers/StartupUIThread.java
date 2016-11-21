@@ -2,12 +2,6 @@ package nl.tudelft.watchdog.eclipse.ui.handlers;
 
 import java.io.IOException;
 
-import org.eclipse.core.commands.ExecutionEvent;
-import org.eclipse.core.commands.ExecutionException;
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.window.Window;
-import org.eclipse.ui.preferences.ScopedPreferenceStore;
-
 import nl.tudelft.watchdog.core.logic.network.JsonTransferer;
 import nl.tudelft.watchdog.core.logic.network.ServerCommunicationException;
 import nl.tudelft.watchdog.core.ui.preferences.ProjectPreferenceSetting;
@@ -15,6 +9,12 @@ import nl.tudelft.watchdog.core.ui.wizards.User;
 import nl.tudelft.watchdog.core.util.WatchDogLogger;
 import nl.tudelft.watchdog.eclipse.ui.preferences.Preferences;
 import nl.tudelft.watchdog.eclipse.util.WatchDogUtils;
+
+import org.eclipse.core.commands.ExecutionEvent;
+import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.window.Window;
+import org.eclipse.ui.preferences.ScopedPreferenceStore;
 
 /**
  * The UI Thread in which all the registration process on startup of WatchDog is
@@ -41,16 +41,16 @@ public class StartupUIThread implements Runnable {
 
 	@Override
 	public void run() {
-		checkWhetherToDisplayUserProjectRegistrationWizard();
+		// checkWhetherToDisplayUserProjectRegistrationWizard();
 		savePreferenceStoreIfNeeded();
 
-		if (WatchDogUtils.isEmpty(preferences.getUserId())
-				|| userProjectRegistrationCancelled) {
-			return;
-		}
+		/*
+		 * if (WatchDogUtils.isEmpty(preferences.getUserId()) ||
+		 * userProjectRegistrationCancelled) { return; }
+		 */
 
 		checkIsWorkspaceAlreadyRegistered();
-		checkWhetherToDisplayProjectWizard();
+		// checkWhetherToDisplayProjectWizard();
 		checkWhetherToStartWatchDog();
 	}
 
@@ -59,8 +59,7 @@ public class StartupUIThread implements Runnable {
 		ProjectPreferenceSetting projectSetting = preferences
 				.getOrCreateProjectSetting(workspaceName);
 		if (!WatchDogUtils.isEmpty(preferences.getUserId())
-				|| (projectSetting.startupQuestionAsked
-						&& !projectSetting.enableWatchdog))
+				|| (projectSetting.startupQuestionAsked && !projectSetting.enableWatchdog))
 			return;
 
 		UserRegistrationWizardDialogHandler newUserWizardHandler = new UserRegistrationWizardDialogHandler();
@@ -69,9 +68,9 @@ public class StartupUIThread implements Runnable {
 					.execute(new ExecutionEvent());
 			savePreferenceStoreIfNeeded();
 			if (statusCode == Window.CANCEL) {
-				boolean shouldRegisterAnonymously = MessageDialog.openQuestion(
-						null, "WatchDog not active!",
-						WATCHDOG_INACTIVE_WARNING);
+				boolean shouldRegisterAnonymously = MessageDialog
+						.openQuestion(null, "WatchDog not active!",
+								WATCHDOG_INACTIVE_WARNING);
 				if (shouldRegisterAnonymously) {
 					makeSilentRegistration();
 				} else {
@@ -114,8 +113,9 @@ public class StartupUIThread implements Runnable {
 	private void registerAnonymousProject(String userId) {
 		String projectId = "";
 		try {
-			projectId = new JsonTransferer().registerNewProject(
-					new nl.tudelft.watchdog.core.ui.wizards.Project(userId));
+			projectId = new JsonTransferer()
+					.registerNewProject(new nl.tudelft.watchdog.core.ui.wizards.Project(
+							userId));
 		} catch (ServerCommunicationException exception) {
 			WatchDogLogger.getInstance().logSevere(exception);
 		}
@@ -130,21 +130,23 @@ public class StartupUIThread implements Runnable {
 	}
 
 	private void checkIsWorkspaceAlreadyRegistered() {
-		if (!preferences.isProjectRegistered(workspaceName)) {
-			boolean useWatchDogInThisWorkspace = MessageDialog.openQuestion(
-					null, "WatchDog Workspace Registration",
-					"Should WatchDog be active in this workspace?");
-			WatchDogLogger.getInstance().logInfo("Registering workspace...");
-			preferences.registerProjectUse(workspaceName,
-					useWatchDogInThisWorkspace);
-		}
+		// if (!preferences.isProjectRegistered(workspaceName)) {
+		// boolean useWatchDogInThisWorkspace = MessageDialog.openQuestion(
+		// null, "WatchDog Workspace Registration",
+		// "Should WatchDog be active in this workspace?");
+		// WatchDogLogger.getInstance().logInfo("Registering workspace...");
+		// preferences.registerProjectUse(workspaceName,
+		// useWatchDogInThisWorkspace);
+		// }
+		boolean useWatchDogInThisWorkspace = true;
+		preferences.registerProjectUse(workspaceName,
+				useWatchDogInThisWorkspace);
 	}
 
 	private void checkWhetherToDisplayProjectWizard() {
 		ProjectPreferenceSetting setting = preferences
 				.getOrCreateProjectSetting(workspaceName);
-		if (setting.enableWatchdog
-				&& WatchDogUtils.isEmpty(setting.projectId)) {
+		if (setting.enableWatchdog && WatchDogUtils.isEmpty(setting.projectId)) {
 			displayProjectWizard();
 			savePreferenceStoreIfNeeded();
 		}
@@ -154,9 +156,9 @@ public class StartupUIThread implements Runnable {
 		// reload setting from preferences
 		ProjectPreferenceSetting setting = preferences
 				.getOrCreateProjectSetting(workspaceName);
-		if (setting.enableWatchdog) {
-			StartupHandler.startWatchDog();
-		}
+		// if (setting.enableWatchdog) {
+		StartupHandler.startWatchDog();
+		// }
 	}
 
 	private void displayProjectWizard() {

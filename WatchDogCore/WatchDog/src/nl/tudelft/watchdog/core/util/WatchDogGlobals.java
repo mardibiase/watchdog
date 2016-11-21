@@ -16,7 +16,7 @@ public class WatchDogGlobals {
 	public final static String INACTIVE_WATCHDOG_TEXT = "WatchDog is inactive!";
 
 	/** The default URI of the WatchDogServer. */
-	public final static String DEFAULT_SERVER_URI = "http://watchdog.testroots.org/";
+	public final static String DEFAULT_SERVER_URI = "http://127.0.0.1/";
 	
 	public final static String DEBUG_SURVEY_TEXT = "Do you ever debug? Did you know WatchDog now also reports on debugging?";
 

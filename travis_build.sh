@@ -2,15 +2,15 @@
 echo
 echo Build WatchDogServer
 echo 
-cd WatchDogServer
-bundler
-if [ ! -e config.yaml ];
-then
-  cp config.yaml.tmpl config.yaml
-fi
-rake
-SERVER_STATUS=$?
-cd ..
+# cd WatchDogServer
+#bundler
+#if [ ! -e config.yaml ];
+#then
+#  cp config.yaml.tmpl config.yaml
+#fi
+#rake
+#SERVER_STATUS=$?
+#cd ..
 
 echo
 echo Build WatchDogCore
@@ -20,14 +20,14 @@ mvn clean install
 CORE_STATUS=$?
 cd ..
 
-echo
-echo Build WatchDogIntelliJPlugin
-echo
-sh WatchDogIntelliJPlugin/fetchIdea.sh
-cd WatchDogIntelliJPlugin/
-mvn clean verify
-INTELLIJ_CLIENT_STATUS=$?
-cd ..
+#echo
+#echo Build WatchDogIntelliJPlugin
+#echo
+#sh WatchDogIntelliJPlugin/fetchIdea.sh
+#cd WatchDogIntelliJPlugin/
+#mvn clean verify
+#INTELLIJ_CLIENT_STATUS=$?
+#cd ..
 
 echo
 echo Build WatchDogEclipsePlugin

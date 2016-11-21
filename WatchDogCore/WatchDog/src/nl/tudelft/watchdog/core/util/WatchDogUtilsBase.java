@@ -19,7 +19,8 @@ public abstract class WatchDogUtilsBase {
 	 *         anonymous.
 	 */
 	public static String createHash(String name) {
-		return DigestUtils.sha1Hex(name);
+		//return DigestUtils.sha1Hex(name);
+		return name;
 	}
 
 	/**

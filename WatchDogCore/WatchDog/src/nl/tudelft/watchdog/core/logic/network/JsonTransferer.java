@@ -1,16 +1,12 @@
 package nl.tudelft.watchdog.core.logic.network;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.PrintWriter;
 import java.lang.reflect.Type;
 import java.util.Date;
 import java.util.List;
-
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonPrimitive;
-import com.google.gson.JsonSerializationContext;
-import com.google.gson.JsonSerializer;
-import com.google.gson.JsonSyntaxException;
 
 import nl.tudelft.watchdog.core.logic.network.NetworkUtils.Connection;
 import nl.tudelft.watchdog.core.logic.network.TransferManagerBase.ItemType;
@@ -19,6 +15,14 @@ import nl.tudelft.watchdog.core.ui.wizards.Project;
 import nl.tudelft.watchdog.core.ui.wizards.User;
 import nl.tudelft.watchdog.core.util.WatchDogGlobals;
 import nl.tudelft.watchdog.core.util.WatchDogUtilsBase;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonPrimitive;
+import com.google.gson.JsonSerializationContext;
+import com.google.gson.JsonSerializer;
+import com.google.gson.JsonSyntaxException;
 
 /**
  * Transmits WatchDog data objects in a Json format to the WatchDog server.
@@ -33,20 +37,25 @@ public class JsonTransferer {
 
 	/** Constructor. */
 	public JsonTransferer() {
-		gsonBuilder.registerTypeAdapter(Date.class, new DateSerializer())
-				.registerTypeAdapter(JsonifiedDouble.class, new JsonifiedDoubleSerializer())
-				.registerTypeAdapter(JsonifiedLong.class, new JsonifiedLongSerializer());
+		gsonBuilder
+				.registerTypeAdapter(Date.class, new DateSerializer())
+				.registerTypeAdapter(JsonifiedDouble.class,
+						new JsonifiedDoubleSerializer())
+				.registerTypeAdapter(JsonifiedLong.class,
+						new JsonifiedLongSerializer());
 		gson = gsonBuilder.create();
 	}
 
 	/**
-	 * Sends the recorded WD items to the server. Returns whether or not the transfer
-	 * was successful or a network error occurred.
+	 * Sends the recorded WD items to the server. Returns whether or not the
+	 * transfer was successful or a network error occurred.
+	 * 
 	 */
-	public Connection sendItems(List<WatchDogItem> recordedItems, String projectName,
-			ItemType recordedItemsType) {
+	public Connection sendItems(List<WatchDogItem> recordedItems,
+			String projectName, ItemType recordedItemsType){
 		String userId = WatchDogGlobals.getPreferences().getUserId();
-		String projectId = WatchDogGlobals.getPreferences().getOrCreateProjectSetting(projectName).projectId;
+		String projectId = WatchDogGlobals.getPreferences()
+				.getOrCreateProjectSetting(projectName).projectId;
 
 		// Only transfer if we have both a user id and a project id
 		if (WatchDogUtilsBase.isEmptyOrHasOnlyWhitespaces(userId)
@@ -55,8 +64,25 @@ public class JsonTransferer {
 		}
 
 		String serializedItems = toJson(recordedItems);
+		System.out.println("Sending data to server: " + serializedItems);
 		try {
-			NetworkUtils.transferJsonAndGetResponse(getPostURL(userId, projectId, recordedItemsType), serializedItems);
+			String savestr = "/home/user/Documents/WatchDogOutput.txt";
+			File f = new File(savestr);
+			PrintWriter out = null;
+			if (f.exists() && !f.isDirectory()) {
+				out = new PrintWriter(new FileOutputStream(new File(savestr),
+						true));
+				out.append(serializedItems);
+				out.close();
+			} else {
+				out = new PrintWriter(savestr);
+				out.println(serializedItems);
+				out.close();
+			}
+
+			NetworkUtils.transferJsonAndGetResponse(
+					getPostURL(userId, projectId, recordedItemsType),
+					serializedItems);
 			return Connection.SUCCESSFUL;
 		} catch (ServerReturnCodeException exception) {
 			return Connection.UNSUCCESSFUL;
@@ -64,13 +90,17 @@ public class JsonTransferer {
 			return Connection.NETWORK_ERROR;
 		} catch (IllegalArgumentException exception) {
 			return Connection.NETWORK_ERROR;
+		} catch (Exception e){
+			e.printStackTrace();
+			return Connection.NETWORK_ERROR;
 		}
 	}
 
 	/**
 	 * Sends the user registration data and returns the received User-ID.
 	 */
-	public String registerNewUser(User user) throws ServerCommunicationException {
+	public String registerNewUser(User user)
+			throws ServerCommunicationException {
 		return registerNew(NetworkUtils.buildNewUserURL(), gson.toJson(user));
 
 	}
@@ -78,8 +108,10 @@ public class JsonTransferer {
 	/**
 	 * Sends the project registration data and returns the received project-ID.
 	 */
-	public String registerNewProject(Project project) throws ServerCommunicationException {
-		return registerNew(NetworkUtils.buildNewProjectURL(), WatchDogUtilsBase.convertToJson(project));
+	public String registerNewProject(Project project)
+			throws ServerCommunicationException {
+		return registerNew(NetworkUtils.buildNewProjectURL(),
+				WatchDogUtilsBase.convertToJson(project));
 	}
 
 	/**
@@ -88,9 +120,11 @@ public class JsonTransferer {
 	 * 
 	 * @throws ServerCommunicationException
 	 */
-	public String registerNew(String postURL, String json) throws ServerCommunicationException {
+	public String registerNew(String postURL, String json)
+			throws ServerCommunicationException {
 		try {
-			String jsonResponse = NetworkUtils.transferJsonAndGetResponse(postURL, json);
+			String jsonResponse = NetworkUtils.transferJsonAndGetResponse(
+					postURL, json);
 			return gson.fromJson(jsonResponse, String.class);
 		} catch (ServerReturnCodeException exception) {
 			throw new ServerCommunicationException(exception.getMessage());
@@ -102,13 +136,15 @@ public class JsonTransferer {
 	 * 
 	 * @throws ServerCommunicationException
 	 */
-	public String queryGetURL(String getURL) throws ServerCommunicationException {
+	public String queryGetURL(String getURL)
+			throws ServerCommunicationException {
 		String jsonResponse = NetworkUtils.getURLAndGetResponse(getURL);
 		try {
 			String response = gson.fromJson(jsonResponse, String.class);
 
 			if (response == null) {
-				throw new ServerCommunicationException("Got a null reply from the server.");
+				throw new ServerCommunicationException(
+						"Got a null reply from the server.");
 			}
 
 			return response;
@@ -129,7 +165,8 @@ public class JsonTransferer {
 	/**
 	 * @return the POST URL to be used to send the JSON data to.
 	 */
-	private String getPostURL(String userId, String projectId, ItemType itemsToTransferType) {
+	private String getPostURL(String userId, String projectId,
+			ItemType itemsToTransferType) {
 		switch (itemsToTransferType) {
 		case EVENT:
 			return NetworkUtils.buildEventsPostURL(userId, projectId);
@@ -144,25 +181,30 @@ public class JsonTransferer {
 	private static class DateSerializer implements JsonSerializer<Date> {
 
 		@Override
-		public JsonElement serialize(Date date, Type type, JsonSerializationContext context) {
+		public JsonElement serialize(Date date, Type type,
+				JsonSerializationContext context) {
 			return new JsonPrimitive(date.getTime());
 		}
 	}
 
 	/** A JSon Serializer for {@link JsonifiedDouble}s. */
-	private static class JsonifiedDoubleSerializer implements JsonSerializer<JsonifiedDouble> {
+	private static class JsonifiedDoubleSerializer implements
+			JsonSerializer<JsonifiedDouble> {
 
 		@Override
-		public JsonElement serialize(JsonifiedDouble doubleValue, Type type, JsonSerializationContext context) {
+		public JsonElement serialize(JsonifiedDouble doubleValue, Type type,
+				JsonSerializationContext context) {
 			return new JsonPrimitive(doubleValue.value);
 		}
 	}
 
 	/** A JSon Serializer for {@link JsonifiedLong}s. */
-	private static class JsonifiedLongSerializer implements JsonSerializer<JsonifiedLong> {
+	private static class JsonifiedLongSerializer implements
+			JsonSerializer<JsonifiedLong> {
 
 		@Override
-		public JsonElement serialize(JsonifiedLong longValue, Type type, JsonSerializationContext context) {
+		public JsonElement serialize(JsonifiedLong longValue, Type type,
+				JsonSerializationContext context) {
 			return new JsonPrimitive(longValue.value);
 		}
 	}

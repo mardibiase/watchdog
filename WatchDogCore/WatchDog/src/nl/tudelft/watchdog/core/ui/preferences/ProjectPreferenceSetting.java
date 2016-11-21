@@ -7,7 +7,7 @@ public class ProjectPreferenceSetting {
 	public String project = "";
 
 	/** The projectId. */
-	public String projectId = "";
+	public String projectId = "jpacman";
 
 	/**
 	 * Flag denoting whether Watchdog should be activated for this project/workspace (

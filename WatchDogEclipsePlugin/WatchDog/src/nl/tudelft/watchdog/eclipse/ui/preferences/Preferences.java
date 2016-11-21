@@ -6,18 +6,18 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.ui.preferences.ScopedPreferenceStore;
-
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-
 import nl.tudelft.watchdog.core.ui.preferences.PreferencesBase;
 import nl.tudelft.watchdog.core.ui.preferences.ProjectPreferenceSetting;
 import nl.tudelft.watchdog.core.util.WatchDogGlobals;
 import nl.tudelft.watchdog.core.util.WatchDogLogger;
 import nl.tudelft.watchdog.eclipse.Activator;
 import nl.tudelft.watchdog.eclipse.util.WatchDogUtils;
+
+import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.ui.preferences.ScopedPreferenceStore;
+
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 /**
  * Utilities for accessing WatchDog's Eclipse preferences. In the case of
@@ -137,7 +137,8 @@ public class Preferences extends PreferencesBase {
 	}
 
 	public String getUserId() {
-		return store.getString(USERID_KEY);
+		// return store.getString(USERID_KEY);
+		return "abcd";
 	}
 
 	public void setUserId(String userId) {
