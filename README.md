@@ -3,7 +3,7 @@ TestRoots Watchdog
 
 WatchDog is a development effort from the TestRoots of the Software Engineering Research Group at TU Delft. The WatchDog project comprises an Eclipse and an IntelliJ plugin for application development monitoring and its server.
 
-Documentation is found in the [wiki](https://github.com/mardibiase/watchdog/wiki)
+Documentation is found in the [wiki](https://github.com/TestRoots/watchdog/wiki
 
 We are on the web: http://www.testroots.org
 
